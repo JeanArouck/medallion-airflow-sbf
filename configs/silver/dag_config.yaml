@@ -1,0 +1,53 @@
+# Configuração da DAG da Camada Silver
+# Define transformação e limpeza dos dados da bronze
+
+dag_id: silver_layer
+description: "Silver Layer - Data transformation and cleaning"
+
+# Schedule - diariamente às 2h UTC (após bronze)
+schedule_interval: "0 2 * * *"
+catchup: false
+
+# Tags para organizar na UI do Airflow
+tags:
+  - "medallion"
+  - "silver"
+  - "transformation"
+
+# Tasks de transformação SQL
+tasks:
+  - task_id: lk_produto
+    type: sql
+    sql_file: lk_produto.sql
+    timeout_minutes: 30
+    pool: "bigquery_queries"
+    description: "Transforma e limpa dados de produtos"
+  
+  - task_id: lk_marca
+    type: sql
+    sql_file: lk_marca.sql
+    timeout_minutes: 30
+    pool: "bigquery_queries"
+    description: "Transforma e limpa dados de marcas"
+
+  - task_id: bt_meta
+    type: sql
+    sql_file: bt_meta.sql
+    timeout_minutes: 30
+    pool: "bigquery_queries"
+    description: "Transforma e limpa dados de metas"
+  
+  - task_id: bt_pedido
+    type: sql
+    sql_file: bt_pedido.sql
+    timeout_minutes: 30
+    pool: "bigquery_queries"
+    description: "Transforma e limpa dados de pedidos"
+  
+  - task_id: bt_pedido_item
+    type: sql
+    sql_file: bt_pedido_item.sql
+    timeout_minutes: 30
+    pool: "bigquery_queries"
+    description: "Transforma e limpa dados de pedidos itens"
+

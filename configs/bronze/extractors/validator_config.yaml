@@ -1,0 +1,53 @@
+# Configuração do Validador de Dados
+# Define regras de validação e qualidade de dados na camada bronze
+
+# Tabelas a validar
+tables:
+  customers:
+    checks:
+      # Verificar campos obrigatórios
+      - type: "not_null"
+        column: "customer_id"
+        description: "customer_id não pode ser nulo"
+
+      - type: "not_null"
+        column: "customer_name"
+        description: "customer_name não pode ser nulo"
+
+      # Verificar valores únicos
+      - type: "unique"
+        column: "customer_id"
+        description: "customer_id deve ser único"
+
+      # Verificar tipos de dado
+      - type: "is_numeric"
+        column: "customer_id"
+        description: "customer_id deve ser numérico"
+
+  orders:
+    checks:
+      - type: "not_null"
+        column: "order_id"
+
+      - type: "not_null"
+        column: "customer_id"
+
+      - type: "unique"
+        column: "order_id"
+
+      - type: "is_numeric"
+        column: "order_amount"
+        min_value: 0
+        description: "order_amount deve ser positivo"
+
+# Ações em caso de falha
+on_failure:
+  action: "log"  # log, fail, ou quarantine
+  slack_alert: false
+  max_failures_allowed: 0
+
+# Relatório
+reporting:
+  enabled: true
+  output_table: "data_quality_report"
+  send_email: false

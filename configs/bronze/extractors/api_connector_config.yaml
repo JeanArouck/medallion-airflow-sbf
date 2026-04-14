@@ -1,0 +1,53 @@
+# Configuração do Conector de API
+# Define credenciais, endpoints e mapeamentos para extração de dados
+
+# Informações da API
+api:
+  base_url: "https://api.example.com"
+  # Credenciais (considere usar Airflow Variables/Secrets em produção)
+  api_key: "${AIRFLOW_VAR_API_KEY}"  # Use Airflow Variables
+  timeout_seconds: 30
+  retry_attempts: 3
+  retry_delay_seconds: 5
+
+# Configurações de dados
+data:
+  # Tabelas/endpoints a extrair
+  tables:
+    customers:
+      endpoint: "/v1/customers"
+      method: "GET"
+      params:
+        limit: 1000
+        offset: 0
+      target_table: "customers"
+
+    orders:
+      endpoint: "/v1/orders"
+      method: "GET"
+      params:
+        limit: 1000
+      target_table: "orders"
+
+# Mapeamento de colunas (opcional)
+# Se a API retorna nomes diferentes, map aqui
+column_mapping:
+  customer_id: "id"
+  customer_name: "name"
+  order_id: "id"
+  order_amount: "total"
+
+# Filtros e transformações
+filters:
+  customers:
+    active_only: true
+    created_after: "2024-01-01"
+  orders:
+    status: "completed"
+
+# Configurações BigQuery
+bigquery:
+  dataset_id: "dev_bronze"  # Será sobrescrito pelo prefixo de env
+  write_disposition: "WRITE_TRUNCATE"  # WRITE_TRUNCATE ou WRITE_APPEND
+  autodetect: true
+  location: "US"

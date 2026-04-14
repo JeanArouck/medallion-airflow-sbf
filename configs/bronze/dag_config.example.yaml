@@ -1,0 +1,47 @@
+# Configuração da DAG da Camada Bronze
+# Define extração de dados via APIs/requisições externas
+
+dag_id: bronze_layer
+description: "Bronze Layer - Raw data ingestion via external APIs"
+
+# Schedule - diariamente às 1h UTC
+schedule_interval: "0 1 * * *"
+catchup: false
+
+# Tags para organizar na UI do Airflow
+tags:
+  - "medallion"
+  - "bronze"
+  - "extraction"
+
+# Tasks de extração
+tasks:
+  # Exemplo de extração de API
+  - task_id: extract_customers
+    type: extractor
+    extractor_module: extractors.connectors.api_connector  # Módulo do extrator
+    config_file: api_connector_config.yaml                 # Arquivo de config
+    timeout_minutes: 30
+    pool: "bigquery_queries"
+    description: "Extrai dados de clientes de API externa"
+
+  # Outro exemplo
+  - task_id: extract_orders
+    type: extractor
+    extractor_module: extractors.connectors.api_connector
+    config_file: api_connector_config.yaml
+    timeout_minutes: 30
+    pool: "bigquery_queries"
+    description: "Extrai dados de pedidos de API externa"
+    # Pode definir dependência explícita
+    downstream_task: null
+
+  # Exemplo de validação/transformação na bronze
+  - task_id: validate_raw_data
+    type: extractor
+    extractor_module: extractors.connectors.data_validator
+    config_file: validator_config.yaml
+    timeout_minutes: 15
+    description: "Valida qualidade dos dados brutos"
+    # Depende das extrações anteriores
+    downstream_task: null

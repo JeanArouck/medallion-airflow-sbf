@@ -1,0 +1,26 @@
+# Configuração da DAG da Camada Gold
+# Define agregações e metricas para consumo
+
+dag_id: gold_layer
+description: "Gold Layer - Aggregations and metrics for consumption"
+
+# Schedule - diariamente às 3h UTC (após silver)
+schedule_interval: "0 3 * * *"
+catchup: false
+
+# Tags para organizar na UI do Airflow
+tags:
+  - "medallion"
+  - "gold"
+  - "analytics"
+  - "metrics"
+
+# Tasks de agregação e métricas
+tasks:
+  - task_id: orders
+    type: sql
+    sql_file: orders.sql
+    timeout_minutes: 30
+    pool: "bigquery_queries"
+    description: "Cria tabela com dados de pedidos"
+

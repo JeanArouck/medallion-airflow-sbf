@@ -1,0 +1,23 @@
+# Apache Airflow e dependências
+apache-airflow[bigquery]==2.7.3
+apache-airflow-providers-google==10.10.1
+
+# Processamento de dados
+pandas>=1.5.0
+numpy>=1.23.0
+
+# Configuração e YAML
+pyyaml>=6.0
+python-dotenv>=1.0.0
+
+# Google Cloud
+google-cloud-bigquery>=3.13.0
+google-cloud-bigquery-storage>=2.22.0
+
+# Utilitários
+requests>=2.28.0
+python-dateutil>=2.8.2
+tenacity>=8.2.0  # Retry decorator
+
+# Logging e monitoramento
+python-json-logger>=2.0.7
